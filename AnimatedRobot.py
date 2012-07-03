@@ -54,7 +54,7 @@ class robot:
     # --------
 
     # init: 
-    #	creates robot and initializes location/orientation 
+    #    creates robot and initializes location/orientation 
     #
 
     def __init__(self, length = 10.0):
@@ -66,49 +66,7 @@ class robot:
         self.steering_noise = 0.0 # initialize steering noise to zero
         self.distance_noise = 0.0 # initialize distance noise to zero
         
-        # Body Buffer info
-        self.bufferfront = 3.0
-        self.bufferrear = 2.0
-        self.bufferside = 1.0
-        
-        # Body - Wheel Ratio
-        self.lengratio = 1.0
-        
-        # Wheels
-        self.lengwf = (self.length*self.lengratio)
-        self.lengwb = self.length*(1-self.lengratio)
-        self.widw = self.length/4 
-        self.radwf = math.sqrt(self.widw**2 + self.lengwf**2)
-        self.radwb = math.sqrt(self.widw**2 + self.lengwb**2)
-        self.betawf = math.atan2(self.widw,self.lengwf)
-        self.betawb = math.atan2(self.widw, self.lengwb)
-
-        
-        
-        #Car Body
-        self.lengf = (self.length*self.lengratio + self.bufferfront)
-        self.lengb = (self.length*(1-self.lengratio) + self.bufferrear)
-        self.wid = (self.length/4 + self.bufferrear)
-        self.radf = math.sqrt(self.wid**2 + self.lengf**2)
-        self.radb = math.sqrt(self.wid**2 + self.lengb**2)
-        self.betaf = math.atan2(self.wid,self.lengf)
-        self.betab = math.atan2(self.wid, self.lengb)
-        
-        self.linesx = [[]]
-        self.linesx.append([])
-        self.linesx.append([])
-        self.linesx.append([])
-        self.linesx.append([])
-        
-        self.linesy = [[]]
-        self.linesy.append([])
-        self.linesy.append([])
-        self.linesy.append([])
-        self.linesy.append([])
-        
-
-
-    
+   
     def __repr__(self):
         return '[x=%.6s y=%.6s orient=%.6s]' % (str(self.x), str(self.y), str(self.orientation))
     # --------
@@ -125,65 +83,7 @@ class robot:
         self.orientation = float(new_orientation)
         
         
-    def draw_wheels(self, steering):
-        cx = self.x
-        cy = self.y
-        rx= []
-        ry = []
-        lw = 1
-        o = self.orientation
-        test = [self.betawf + o, -self.betawf + o, pi + self.betawb + o, pi -self.betawb + o]
 
-        for i in range(4):
-            wx = []
-            wy = []
-            if (i < 2):
-                ti = test[i]
-                ti2 = test[0] + steering
-                rx=(cx + self.radwf*cos(ti))
-                ry=(cy + self.radwf*sin(ti))
-                wx.append(rx + lw * cos(ti2))
-                wx.append(rx + lw * cos(ti2 + pi))
-                wy.append(ry + lw * sin(ti2))
-                wy.append(ry + lw * sin(ti2 + pi))
-
-            else:
-                ti = test[i]
-                ti2 = test[i] + pi/2
-                rx=(cx + self.radwb*cos(ti))
-                ry=(cy + self.radwb*sin(ti))
-                wx.append(rx + lw * cos(ti2))
-                wx.append(rx + lw * cos(ti2 + pi))
-                wy.append(ry + lw * sin(ti2))
-                wy.append(ry + lw * sin(ti2 + pi))
-            self.linesx[i].append(wx) 
-            self.linesy[i].append(wy)
-        robo = robot()
-        robo = self
-        return(robo)
-    
-        
-    def draw_robot(self, steering):
-        cx = self.x
-        cy = self.y
-
-        rx= []
-        ry = []
-        test = [self.betaf, -self.betaf, pi + self.betab, pi -self.betab]
-        for i in range(4):
-            if (i < (len(test)/2)):
-                rx.append(cx + self.radf*cos(self.orientation + test[i]))
-                ry.append(cy + self.radf*sin(self.orientation + test[i]))
-            else:
-                rx.append(cx + self.radb*cos(self.orientation + test[i]))
-                ry.append(cy + self.radb*sin(self.orientation + test[i]))
-        robo = robot()
-        robo = self.draw_wheels(steering)
-        rx.append(rx[0])
-        ry.append(ry[0])
-        robo.linesx[4].append(rx)
-        robo.linesy[4].append(ry)
-        return robo
 
     # --------
     # set_noise: 
@@ -197,10 +97,7 @@ class robot:
         self.steering_noise = float(new_s_noise)
         self.distance_noise = float(new_d_noise)
         
-
-        
-
-    
+   
     ############# ONLY ADD/MODIFY CODE BELOW HERE ###################
 
     # --------
@@ -242,7 +139,153 @@ class robot:
                       # of the robot class with the correct coordinates.
                       
     ############## ONLY ADD/MODIFY CODE ABOVE HERE ####################
+class RobotPositions:
+    def __init__(self, robo = robot()):
+
+        # Body - Wheel Ratio
+        lengratio = 1.0
+
+        leng = robo.length        
         
+        # Body Buffer info
+        self.bufferfront = 3.0
+        self.bufferrear = 2.0
+        self.bufferside = 1.0
+
+        
+        # Wheels
+        self.lengwf = (leng*lengratio)
+        self.lengwb = leng*(1-lengratio)
+        self.widw = leng/4 
+        self.radwf = math.sqrt(self.widw**2 + self.lengwf**2)
+        self.radwb = math.sqrt(self.widw**2 + self.lengwb**2)
+        self.betawf = math.atan2(self.widw,self.lengwf)
+        self.betawb = math.atan2(self.widw, self.lengwb)
+       
+        #Car Body
+        self.lengf = (leng*lengratio + self.bufferfront)
+        self.lengb = (leng*(1-lengratio) + self.bufferrear)
+        self.wid = (leng/4 + self.bufferrear)
+        self.radf = math.sqrt(self.wid**2 + self.lengf**2)
+        self.radb = math.sqrt(self.wid**2 + self.lengb**2)
+        self.betaf = math.atan2(self.wid,self.lengf)
+        self.betab = math.atan2(self.wid, self.lengb)
+        
+        self.linesx = [[]]
+        self.linesx.append([])
+        self.linesx.append([])
+        self.linesx.append([])
+        self.linesx.append([])
+        
+        self.linesy = [[]]
+        self.linesy.append([])
+        self.linesy.append([])
+        self.linesy.append([])
+        self.linesy.append([])
+        
+    def wheelsnapshot(self, inrobo, steering):
+        cx = inrobo.x
+        cy = inrobo.y
+        rx= []
+        ry = []
+        lw = 1
+        o = inrobo.orientation
+        test = [self.betawf + o, -self.betawf + o, pi + self.betawb + o, pi -self.betawb + o]
+
+        for i in range(4):
+            wx = []
+            wy = []
+            if (i < 2):
+                ti = test[i]
+                ti2 = test[0] + steering
+                rx=(cx + self.radwf*cos(ti))
+                ry=(cy + self.radwf*sin(ti))
+                wx.append(rx + lw * cos(ti2))
+                wx.append(rx + lw * cos(ti2 + pi))
+                wy.append(ry + lw * sin(ti2))
+                wy.append(ry + lw * sin(ti2 + pi))
+
+            else:
+                ti = test[i]
+                ti2 = test[i] + pi/2
+                rx=(cx + self.radwb*cos(ti))
+                ry=(cy + self.radwb*sin(ti))
+                wx.append(rx + lw * cos(ti2))
+                wx.append(rx + lw * cos(ti2 + pi))
+                wy.append(ry + lw * sin(ti2))
+                wy.append(ry + lw * sin(ti2 + pi))
+            self.linesx[i].append(wx) 
+            self.linesy[i].append(wy)
+        roboart = RobotPositions()
+        roboart = self
+        return(roboart)
+    
+        
+    def snapshot(self, inrobo, steering):
+        cx = inrobo.x
+        cy = inrobo.y
+
+        rx= []
+        ry = []
+        test = [self.betaf, -self.betaf, pi + self.betab, pi -self.betab]
+        for i in range(4):
+            if (i < (len(test)/2)):
+                rx.append(cx + self.radf*cos(inrobo.orientation + test[i]))
+                ry.append(cy + self.radf*sin(inrobo.orientation + test[i]))
+            else:
+                rx.append(cx + self.radb*cos(inrobo.orientation + test[i]))
+                ry.append(cy + self.radb*sin(inrobo.orientation + test[i]))
+        roboart = RobotPositions()
+        roboart = self.wheelsnapshot(inrobo, steering)
+        rx.append(rx[0])
+        ry.append(ry[0])
+        roboart.linesx[4].append(rx)
+        roboart.linesy[4].append(ry)
+        return roboart      
+
+    def plotmotion(self):
+        lx = self.linesx
+        ly = self.linesy
+        
+        fig = plt.figure()
+        ax = fig.add_subplot(111, autoscale_on=False, xlim=(-150, 300), ylim=(-150, 300))
+        ax.grid()
+        linefr, = ax.plot([], [], lw=1)
+        linefl, = ax.plot([], [], lw=1)
+        linebr, = ax.plot([], [], lw=1)
+        linebl, = ax.plot([], [], lw=1)
+        linebod, = ax.plot([], [], lw=1)
+        
+        lxperm = []
+        lyperm = []
+        for i in range(len(lx[4])):
+            lxperm.append(lx[4][i][0])
+            lyperm.append(ly[4][i][0])
+        plt.plot(lxperm,lyperm, lw=1)
+        
+        def init():
+            linefr.set_data([], [])
+            linefl.set_data([], [])
+            linebr.set_data([], [])
+            linebl.set_data([], [])
+            linebod.set_data([], [])
+            return linefr, linefl, linebr, linebl, linebod
+        
+        def animate(i):
+            linefr.set_data(lx[0][i], ly[0][i])
+            linefl.set_data(lx[1][i], ly[1][i])
+            linebr.set_data(lx[2][i], ly[2][i])
+            linebl.set_data(lx[3][i], ly[3][i])
+            linebod.set_data(lx[4][i], ly[4][i])
+        
+            return linefr, linefl, linebr, linebl, linebod
+            
+        for i in range(1, T):
+            ani = animation.FuncAnimation(fig, animate, np.arange(1, T), interval=1)    
+        
+        #ani.save('test_sub.mp4')
+        
+        plt.show()
 
 ## IMPORTANT: You may uncomment the test cases below to test your code.
 ## But when you submit this code, your test cases MUST be commented
@@ -304,19 +347,20 @@ bearing_noise  = 0.0
 steering_noise = 0.0
 distance_noise = 0.0
 myrobot = robot(length)
+robotart = RobotPositions()
 myrobot.set(0.0, 0.0, 0.0)
 myrobot.set_noise(bearing_noise, steering_noise, distance_noise)
 
 
 
 motions = [[0.4, 1.]]
-for row in range(500):
-    move = .2 + .001 * row
+for row in range(3000):
+    move = .2 + .005 * row
     motions.append([move,1.])
 
-for row in range(500):
-    move = -.2 - .001 * row
-    motions.append([move,1.])
+#for row in range(500):
+#    move = -.2 - .001 * row
+#    motions.append([move,1.])
 
 T = len(motions)
 
@@ -327,44 +371,11 @@ for t in range(T):
     myrobot = myrobot.move(motions[t])
     x.append(myrobot.x)
     y.append(myrobot.y)
-    myrobot = myrobot.draw_robot(motions[t][0])
+    if not (t%2):    #this limits the number of snapshots we take.
+        robotart = robotart.snapshot(myrobot, motions[t][0])
     #print ('Robot:    ', myrobot)
 
-lx = myrobot.linesx
-ly = myrobot.linesy
-
-fig = plt.figure()
-ax = fig.add_subplot(111, autoscale_on=False, xlim=(-100, 150), ylim=(-100, 150))
-ax.grid()
-linefr, = ax.plot([], [], lw=1)
-linefl, = ax.plot([], [], lw=1)
-linebr, = ax.plot([], [], lw=1)
-linebl, = ax.plot([], [], lw=1)
-linebod, = ax.plot([], [], lw=1)
-
-def init():
-    linefr.set_data([], [])
-    linefl.set_data([], [])
-    linebr.set_data([], [])
-    linebl.set_data([], [])
-    linebod.set_data([], [])
-    return linefr, linefl, linebr, linebl, linebod
-
-def animate(i):
-    linefr.set_data(lx[0][i], ly[0][i])
-    linefl.set_data(lx[1][i], ly[1][i])
-    linebr.set_data(lx[2][i], ly[2][i])
-    linebl.set_data(lx[3][i], ly[3][i])
-    linebod.set_data(lx[4][i], ly[4][i])
-
-    return linefr, linefl, linebr, linebl, linebod
-    
-for i in range(1, T):
-    ani = animation.FuncAnimation(fig, animate, np.arange(1, T), interval=25)    
-
-#ani.save('test_sub.mp4')
-
-plt.show()
+robotart.plotmotion()
 ## IMPORTANT: You may uncomment the test cases below to test your code.
 ## But when you submit this code, your test cases MUST be commented
 ## out. Our testing program provides its own code for testing your
